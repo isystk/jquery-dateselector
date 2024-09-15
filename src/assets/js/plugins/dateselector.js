@@ -5,6 +5,7 @@
             format: 'YYYY/MM/DD',
             minDate: '1970/01/01',
             maxDate: '2099/12/31',
+            okCallback: () => {},
         };
         const settings = $.extend({}, defaults, options);
 
@@ -77,12 +78,18 @@
                 $('.dateselector-day', tooltip).attr('max', 31).prop('disabled', false);
                 if (minDateObj.month() + 1 === Number($(this).val())) {
                     $('.dateselector-day', tooltip).attr('min', minDateObj.date());
+                    if (Number($('.dateselector-day', tooltip).val()) < minDateObj.date()) {
+                        $('.dateselector-day', tooltip).val('');
+                    }
                 }
                 if (Number($(this).val()) < minDateObj.month() + 1) {
                     $('.dateselector-day', tooltip).prop('disabled', true).val('');
                 }
                 if (maxDateObj.month() + 1 === Number($(this).val())) {
                     $('.dateselector-day', tooltip).attr('max', maxDateObj.date());
+                    if (maxDateObj.date() < Number($('.dateselector-day', tooltip).val())) {
+                        $('.dateselector-day', tooltip).val('');
+                    }
                 }
                 if (Number($(this).val()) > maxDateObj.month() + 1) {
                     $('.dateselector-day', tooltip).prop('disabled', true).val('');
@@ -124,6 +131,7 @@
                         return;
                     }
                     input.val(outputDateObj.format(settings.format));
+                    settings.okCallback({result: outputDateObj.format(settings.format)});
                 }
                 tooltip.hide();
             });
