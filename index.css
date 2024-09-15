@@ -52,6 +52,15 @@
 .dateselector-tooltip input {
   margin: 5px 0;
 }
+.dateselector-tooltip input.dateselector-year {
+  width: 70px;
+}
+.dateselector-tooltip input.dateselector-month {
+  width: 40px;
+}
+.dateselector-tooltip input.dateselector-day {
+  width: 40px;
+}
 .dateselector-tooltip p.error {
   margin: 0;
   font-size: 12px;
