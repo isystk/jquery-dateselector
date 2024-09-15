@@ -39,6 +39,15 @@
   z-index: 1000;
   input {
     margin: 5px 0;
+    &.dateselector-year {
+      width: 70px;
+    }
+    &.dateselector-month {
+      width: 40px;
+    }
+    &.dateselector-day {
+      width: 40px;
+    }
   }
   p.error {
     margin: 0;
