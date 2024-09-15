@@ -1,0 +1,37 @@
+name: GitHub Pages
+
+on:
+  push:
+    branches:
+      - master  # Set a branch name to trigger deployment
+
+# 書き込み権限の付与
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true  # Fetch Hugo themes (true OR recursive)
+          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+  
+      # GitHub Pagesに公開するファイルの作成
+      # 実際はGitリポジトリをチェックアウトしてそこからビルドすることが多い
+      - name: Generate Page
+        run: |
+          npm install
+          npm run build
+
+      # GitHub Pagesに公開
+      # デフォルトではgh-pageeブランチにpushする
+      - name: Push gh-pages branch
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/master' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist

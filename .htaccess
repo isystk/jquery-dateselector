@@ -1,0 +1,11 @@
+
+# design
+RewriteEngine On
+RewriteBase /jquery-jSignature/
+RewriteCond %{REQUEST_URI} !/jquery-jSignature/dist
+RewriteCond %{REQUEST_URI} !/jquery-jSignature/git-hook.php
+RewriteRule ^(.*)$ dist/$1 [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /jquery-jSignature/ [L,R=301]
+

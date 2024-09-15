@@ -1,0 +1,59 @@
+
+.wrapper {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.page-title {
+  font-size: 20px;
+  letter-spacing: 1.6px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.description {
+  margin: 18px 0 23px 0;
+  font-size: 16px;
+}
+
+.btn-outline-primary {
+  font-weight: bold;
+}
+
+.form-group {
+  margin-top: 30px;
+  font-size: 12px;
+  p {
+    font-size: 16px;
+    margin: 0;
+  }
+}
+
+.dateselector-tooltip {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  padding: 10px;
+  z-index: 1000;
+  input {
+    margin: 5px 0;
+  }
+  p.error {
+    margin: 0;
+    font-size: 12px;
+    color: #ff0000;
+    display: none;
+  }
+  button {
+    border: 1px solid transparent;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    margin-top: 10px;
+    width: 100%;
+    color: #fff;
+    background-color: #007bff;
+  }
+}
