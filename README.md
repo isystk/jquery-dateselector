@@ -14,8 +14,6 @@
 
 ![demo](./demo.png "demo")
 
-#### ■ フロント画面（React）
-
 https://isystk.github.io/jquery-dateselector
 
 ## 💬 使い方
