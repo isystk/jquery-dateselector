@@ -2,13 +2,18 @@
     const dayjs = require('dayjs')
     $.fn.dateselector = function(options) {
         const defaults = {
-            format: 'YYYY/MM/DD'
+            format: 'YYYY/MM/DD',
+            minDate: '1970/01/01',
+            maxDate: '2099/12/31',
         };
         const settings = $.extend({}, defaults, options);
+
+        const minDateObj = dayjs(settings.minDate, settings.format);
+        const maxDateObj = dayjs(settings.maxDate, settings.format);
         
         const layout = `
             <div class="dateselector-tooltip">
-                <input type="number" class="dateselector-year" placeholder="年" min="1900" max="2100">
+                <input type="number" class="dateselector-year" placeholder="年" min="${minDateObj.year()}" max="${maxDateObj.year()}">
                 <span>/</span>
                 <input type="number" class="dateselector-month" placeholder="月" min="1" max="12">
                 <span>/</span>
@@ -41,7 +46,49 @@
                     left: offset.left
                 }).show();
             });
+            
+            // 年が入力されたら月の上限を変更する
+            $('.dateselector-year', tooltip).on('change', function () {
+                $('.dateselector-month', tooltip).attr('min', 1).prop('disabled', false);
+                $('.dateselector-month', tooltip).attr('max', 12).prop('disabled', false);
+                if (minDateObj.year() === Number($(this).val())) {
+                    $('.dateselector-month', tooltip).attr('min', minDateObj.month() + 1);
+                    if (Number($('.dateselector-month', tooltip).val()) < minDateObj.month() + 1) {
+                        $('.dateselector-month, .dateselector-day', tooltip).val('');
+                    }
+                }
+                if (Number($(this).val()) < minDateObj.year()) {
+                    $('.dateselector-month, .dateselector-day', tooltip).prop('disabled', true).val('');
+                }
+                if (maxDateObj.year() === Number($(this).val())) {
+                    $('.dateselector-month', tooltip).attr('max', maxDateObj.month() + 1);
+                    if (maxDateObj.month() + 1 < Number($('.dateselector-month', tooltip).val())) {
+                        $('.dateselector-month, .dateselector-day', tooltip).val('');
+                    }
+                }
+                if (Number($(this).val()) > maxDateObj.year()) {
+                    $('.dateselector-month, .dateselector-day', tooltip).prop('disabled', true).val('');
+                }
+            });
 
+            // 月が入力されたら日の上限を変更する
+            $('.dateselector-month', tooltip).on('change', function () {
+                $('.dateselector-day', tooltip).attr('min', 1).prop('disabled', false);
+                $('.dateselector-day', tooltip).attr('max', 31).prop('disabled', false);
+                if (minDateObj.month() + 1 === Number($(this).val())) {
+                    $('.dateselector-day', tooltip).attr('min', minDateObj.date());
+                }
+                if (Number($(this).val()) < minDateObj.month() + 1) {
+                    $('.dateselector-day', tooltip).prop('disabled', true).val('');
+                }
+                if (maxDateObj.month() + 1 === Number($(this).val())) {
+                    $('.dateselector-day', tooltip).attr('max', maxDateObj.date());
+                }
+                if (Number($(this).val()) > maxDateObj.month() + 1) {
+                    $('.dateselector-day', tooltip).prop('disabled', true).val('');
+                }
+            });
+            
             // ボタンがクリックされた時に日付をセットしツールチップを閉じる
             $('button', tooltip).on('click', function () {
                 const year = $('.dateselector-year', tooltip).val();
@@ -57,6 +104,22 @@
                         $('p.error', tooltip)
                             .empty()
                             .text('正しい日付を入力してください。')
+                            .show();
+                        return;
+                    }
+                    if (outputDateObj.isBefore(dayjs(settings.minDate))) {
+                        // 下限より過去の日付が入力された場合
+                        $('p.error', tooltip)
+                            .empty()
+                            .text(`${settings.minDate}より未来の日付を入力してください。`)
+                            .show();
+                        return;
+                    }
+                    if (outputDateObj.isAfter(dayjs(settings.maxDate))) {
+                        // 上限より未来の日付が入力された場合
+                        $('p.error', tooltip)
+                            .empty()
+                            .text(`${settings.maxDate}より過去の日付を入力してください。`)
                             .show();
                         return;
                     }
