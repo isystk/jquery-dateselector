@@ -37,16 +37,16 @@
   border: 1px solid #ccc;
   padding: 10px;
   z-index: 1000;
-  input {
+  input,select {
     margin: 5px 0;
     &.dateselector-year {
       width: 70px;
     }
     &.dateselector-month {
-      width: 40px;
+      width: 50px;
     }
     &.dateselector-day {
-      width: 40px;
+      width: 50px;
     }
   }
   p.error {
