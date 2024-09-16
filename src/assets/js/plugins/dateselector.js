@@ -56,7 +56,7 @@
                 })()}
                 </select>
                 <p class="error"></p>
-                <button>OK</button>
+                <div><button>OK</button></div>
             </div>
         `;
 
@@ -64,6 +64,10 @@
         const init = (input) => {
             const tooltip = $(layout);
             $('body').append(tooltip);
+            
+            const dateselectorYear = $('.dateselector-year', tooltip);
+            const dateselectorMonth = $('.dateselector-month', tooltip);
+            const dateselectorDay = $('.dateselector-day', tooltip);
             
             // テキストボックスがクリックされた時にツールチップを表示
             input.on('click', function (e) {
@@ -73,9 +77,9 @@
                 const initialValue = input.val();
                 if (initialValue) {
                     const initialDate = dayjs(initialValue, settings.format);
-                    $('.dateselector-year', tooltip).val(initialDate.year());
-                    $('.dateselector-month', tooltip).val(initialDate.month()+1);
-                    $('.dateselector-day', tooltip).val(initialDate.date());
+                    dateselectorYear.val(initialDate.year());
+                    dateselectorMonth.val(initialDate.month()+1);
+                    dateselectorDay.val(initialDate.date());
                 }
                 
                 const offset = input.offset();
@@ -86,154 +90,174 @@
             });
             
             // 年が入力されたら月の上限を変更する
-            $('.dateselector-year', tooltip).on('change', function () {
-                // $('.dateselector-month', tooltip).attr('min', 1).attr('max', 12).prop('disabled', false);
-                // $('.dateselector-day', tooltip).attr('min', 1).attr('max', 31).prop('disabled', false);
+            dateselectorYear.on('change', function () {
+                // dateselectorMonth.attr('min', 1).attr('max', 12).prop('disabled', false);
+                // dateselectorDay.attr('min', 1).attr('max', 31).prop('disabled', false);
                 // if (minDateObj.year() === Number($(this).val())) {
-                //     $('.dateselector-month', tooltip).attr('min', minDateObj.month() + 1);
-                //     if (Number($('.dateselector-month', tooltip).val()) < minDateObj.month() + 1) {
-                //         $('.dateselector-month, .dateselector-day', tooltip).val('');
+                //     dateselectorMonth.attr('min', minDateObj.month() + 1);
+                //     if (Number(dateselectorMonth.val()) < minDateObj.month() + 1) {
+                //         dateselectorMonth.val('');
+                //         dateselectorDay.val('');
                 //     }
                 // }
                 // if (Number($(this).val()) < minDateObj.year()) {
-                //     $('.dateselector-month, .dateselector-day', tooltip).prop('disabled', true).val('');
+                //     dateselectorMonth.prop('disabled', true).val('');
+                //     dateselectorDay.prop('disabled', true).val('');
                 // }
                 // if (maxDateObj.year() === Number($(this).val())) {
-                //     $('.dateselector-month', tooltip).attr('max', maxDateObj.month() + 1);
-                //     if (maxDateObj.month() + 1 < Number($('.dateselector-month', tooltip).val())) {
-                //         $('.dateselector-month, .dateselector-day', tooltip).val('');
+                //     dateselectorMonth.attr('max', maxDateObj.month() + 1);
+                //     if (maxDateObj.month() + 1 < Number(dateselectorMonth.val())) {
+                //         dateselectorMonth.val('');
+                //         dateselectorDay.val('');
                 //     }
                 // }
                 // if (Number($(this).val()) > maxDateObj.year()) {
-                //     $('.dateselector-month, .dateselector-day', tooltip).prop('disabled', true).val('');
+                //     dateselectorMonth.prop('disabled', true).val('');
+                //     dateselectorDay.prop('disabled', true).val('');
                 // }
-                $('.dateselector-month', tooltip).prop('disabled', false);
-                $('.dateselector-month', tooltip).find('option').removeAttr('hidden');
-                $('.dateselector-day', tooltip).prop('disabled', false);
-                $('.dateselector-day', tooltip).find('option').removeAttr('hidden');
+                dateselectorMonth.prop('disabled', false);
+                dateselectorMonth.find('option').removeAttr('hidden');
+                dateselectorDay.prop('disabled', false);
+                dateselectorDay.find('option').removeAttr('hidden');
                 if (minDateObj.year() === Number($(this).val())) {
-                    $('.dateselector-month', tooltip).find('option').each(function () {
+                    dateselectorMonth.find('option').each(function () {
                         if ($(this).val() < minDateObj.month() + 1) {
                             $(this).attr('hidden', 'hidden');
                         }
                     });
-                    if (Number($('.dateselector-month', tooltip).val()) < minDateObj.month() + 1) {
-                        $('.dateselector-month, .dateselector-day', tooltip).val('');
+                    if (Number(dateselectorMonth.val()) < minDateObj.month() + 1) {
+                        dateselectorMonth.val('');
+                        dateselectorDay.val('');
                     }
                 }
                 if (Number($(this).val()) < minDateObj.year()) {
-                    $('.dateselector-month, .dateselector-day', tooltip).prop('disabled', true).val('');
+                    dateselectorMonth.prop('disabled', true).val('');
+                    dateselectorDay.prop('disabled', true).val('');
                 }
                 if (maxDateObj.year() === Number($(this).val())) {
-                    $('.dateselector-month', tooltip).find('option').each(function () {
+                    dateselectorMonth.find('option').each(function () {
                         if (maxDateObj.month() + 1 < $(this).val()) {
                             $(this).attr('hidden', 'hidden');
                         }
                     });
-                    if (maxDateObj.month() + 1 < Number($('.dateselector-month', tooltip).val())) {
-                        $('.dateselector-month, .dateselector-day', tooltip).val('');
+                    if (maxDateObj.month() + 1 < Number(dateselectorMonth.val())) {
+                        dateselectorMonth.val('');
+                        dateselectorDay.val('');
                     }
                 }
                 if (Number($(this).val()) > maxDateObj.year()) {
-                    $('.dateselector-month, .dateselector-day', tooltip).prop('disabled', true).val('');
+                    dateselectorMonth.prop('disabled', true).val('');
+                    dateselectorDay.prop('disabled', true).val('');
                 }
+
+                // 存在しない日付の場合は非表示にする
+                checkDateselectorDay();
             });
 
             // 月が入力されたら日の上限を変更する
-            $('.dateselector-month', tooltip).on('change', function () {
-                // $('.dateselector-day', tooltip).attr('min', 1).attr('max', 31).prop('disabled', false);
-                // if (Number($('.dateselector-year', tooltip).val()) <= minDateObj.year()) {
+            dateselectorMonth.on('change', function () {
+                // dateselectorDay.attr('min', 1).attr('max', 31).prop('disabled', false);
+                // if (Number(dateselectorYear.val()) <= minDateObj.year()) {
                 //     // 年が下限の場合
                 //     if (minDateObj.month() + 1 === Number($(this).val())) {
-                //         $('.dateselector-day', tooltip).attr('min', minDateObj.date());
-                //         if (Number($('.dateselector-day', tooltip).val()) < minDateObj.date()) {
-                //             $('.dateselector-day', tooltip).val('');
+                //         dateselectorDay.attr('min', minDateObj.date());
+                //         if (Number(dateselectorDay.val()) < minDateObj.date()) {
+                //             dateselectorDay.val('');
                 //         }
                 //     }
                 //     if (Number($(this).val()) < minDateObj.month() + 1) {
-                //         $('.dateselector-day', tooltip).prop('disabled', true).val('');
+                //         dateselectorDay.prop('disabled', true).val('');
                 //     }
                 // }
-                // if (maxDateObj.year() <= Number($('.dateselector-year', tooltip).val())) {
+                // if (maxDateObj.year() <= Number(dateselectorYear.val())) {
                 //     // 年が上限の場合
                 //     if (maxDateObj.month() + 1 === Number($(this).val())) {
-                //         $('.dateselector-day', tooltip).attr('max', maxDateObj.date());
-                //         if (maxDateObj.date() < Number($('.dateselector-day', tooltip).val())) {
-                //             $('.dateselector-day', tooltip).val('');
+                //         dateselectorDay.attr('max', maxDateObj.date());
+                //         if (maxDateObj.date() < Number(dateselectorDay.val())) {
+                //             dateselectorDay.val('');
                 //         }
                 //     }
                 //     if (Number($(this).val()) > maxDateObj.month() + 1) {
-                //         $('.dateselector-day', tooltip).prop('disabled', true).val('');
+                //         dateselectorDay.prop('disabled', true).val('');
                 //     }
                 // }
-                $('.dateselector-day', tooltip).prop('disabled', false);
-                $('.dateselector-day', tooltip).find('option').removeAttr('hidden');
-                if (Number($('.dateselector-year', tooltip).val()) <= minDateObj.year()) {
+                dateselectorDay.prop('disabled', false);
+                dateselectorDay.find('option').removeAttr('hidden');
+                if (Number(dateselectorYear.val()) <= minDateObj.year()) {
                     // 年が下限の場合
                     if (minDateObj.month() + 1 === Number($(this).val())) {
-                        $('.dateselector-day', tooltip).find('option').each(function () {
+                        dateselectorDay.find('option').each(function () {
                             if ($(this).val() < minDateObj.date()) {
                                 $(this).attr('hidden', 'hidden');
                             }
                         });
-                        if (Number($('.dateselector-day', tooltip).val()) < minDateObj.date()) {
-                            $('.dateselector-day', tooltip).val('');
+                        if (Number(dateselectorDay.val()) < minDateObj.date()) {
+                            dateselectorDay.val('');
                         }
                     }
                     if (Number($(this).val()) < minDateObj.month() + 1) {
-                        $('.dateselector-day', tooltip).prop('disabled', true).val('');
+                        dateselectorDay.prop('disabled', true).val('');
                     }
                 }
-                if (maxDateObj.year() <= Number($('.dateselector-year', tooltip).val())) {
+                if (maxDateObj.year() <= Number(dateselectorYear.val())) {
                     // 年が上限の場合
                     if (maxDateObj.month() + 1 === Number($(this).val())) {
-                        $('.dateselector-day', tooltip).find('option').each(function () {
+                        dateselectorDay.find('option').each(function () {
                             if (maxDateObj.date() < $(this).val()) {
                                 $(this).attr('hidden', 'hidden');
                             }
                         });
-                        if (maxDateObj.date() < Number($('.dateselector-day', tooltip).val())) {
-                            $('.dateselector-day', tooltip).val('');
+                        if (maxDateObj.date() < Number(dateselectorDay.val())) {
+                            dateselectorDay.val('');
                         }
                     }
                     if (Number($(this).val()) > maxDateObj.month() + 1) {
-                        $('.dateselector-day', tooltip).prop('disabled', true).val('');
+                        dateselectorDay.prop('disabled', true).val('');
                     }
                 }
+                
+                // 存在しない日付の場合は非表示にする
+                checkDateselectorDay();
             });
+
+            // 存在しない日付の場合は非表示にする
+            const checkDateselectorDay = () => {
+                dateselectorDay.find('option').each(function () {
+                    const year = dateselectorYear.val();
+                    const month = ('0' + dateselectorMonth.val()).slice(-2);
+                    const day = ('0' + $(this).val()).slice(-2);
+                    const inputDate = `${year}-${month}-${day}`;
+                    if (!isValidDate(inputDate)) {
+                        $(this).attr('hidden', 'hidden');
+                        if (dateselectorDay.val() === day) {
+                            dateselectorDay.val('')
+                        }
+                    }
+                });
+            }
             
             // ボタンがクリックされた時に日付をセットしツールチップを閉じる
             $('button', tooltip).on('click', function () {
-                const year = $('.dateselector-year', tooltip).val();
-                const month = ('0' + $('.dateselector-month', tooltip).val()).slice(-2);
-                const day = ('0' + $('.dateselector-day', tooltip).val()).slice(-2);
+                const year = dateselectorYear.val();
+                const month = ('0' + dateselectorMonth.val()).slice(-2);
+                const day = ('0' + dateselectorDay.val()).slice(-2);
 
                 if (year && month && day) {
                     const inputDate = `${year}-${month}-${day}`;
                     const outputDateObj = dayjs(inputDate);
-                    const outputDate = outputDateObj.format('YYYY-MM-DD')
-                    if (!isValidDate(inputDate, outputDate)) {
+                    if (!isValidDate(inputDate)) {
                         // 日付として不正な場合は何もしない。
-                        $('p.error', tooltip)
-                            .empty()
-                            .text('正しい日付を入力してください。')
-                            .show();
+                        showError('正しい日付を入力してください。');
                         return;
                     }
                     if (outputDateObj.isBefore(dayjs(settings.minDate))) {
                         // 下限より過去の日付が入力された場合
-                        $('p.error', tooltip)
-                            .empty()
-                            .text(`${settings.minDate}より未来の日付を入力してください。`)
-                            .show();
+                        showError(`${settings.minDate}より未来の日付を入力してください。`);
                         return;
                     }
                     if (outputDateObj.isAfter(dayjs(settings.maxDate))) {
                         // 上限より未来の日付が入力された場合
-                        $('p.error', tooltip)
-                            .empty()
-                            .text(`${settings.maxDate}より過去の日付を入力してください。`)
-                            .show();
+                        showError(`${settings.maxDate}より過去の日付を入力してください。`);
                         return;
                     }
                     input.val(outputDateObj.format(settings.format));
@@ -241,8 +265,17 @@
                 }
                 tooltip.hide();
             });
+            
+            const showError = (message) => {
+                $('p.error', tooltip)
+                    .empty()
+                    .text(message)
+                    .show();
+            }
  
-            const isValidDate = (inputDate, outputDate) => {
+            const isValidDate = (inputDate ) => {
+                const outputDateObj = dayjs(inputDate);
+                const outputDate = outputDateObj.format('YYYY-MM-DD')
                 const dateParsed = dayjs(outputDate);
                 return dateParsed.isValid() && inputDate === outputDate;
             }
