@@ -49,17 +49,17 @@
   padding: 10px;
   z-index: 1000;
 }
-.dateselector-tooltip input {
+.dateselector-tooltip input, .dateselector-tooltip select {
   margin: 5px 0;
 }
-.dateselector-tooltip input.dateselector-year {
+.dateselector-tooltip input.dateselector-year, .dateselector-tooltip select.dateselector-year {
   width: 70px;
 }
-.dateselector-tooltip input.dateselector-month {
-  width: 40px;
+.dateselector-tooltip input.dateselector-month, .dateselector-tooltip select.dateselector-month {
+  width: 50px;
 }
-.dateselector-tooltip input.dateselector-day {
-  width: 40px;
+.dateselector-tooltip input.dateselector-day, .dateselector-tooltip select.dateselector-day {
+  width: 50px;
 }
 .dateselector-tooltip p.error {
   margin: 0;
