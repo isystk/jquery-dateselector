@@ -3,7 +3,7 @@
     $.fn.dateselector = function(options) {
         const defaults = {
             format: 'YYYY/MM/DD',
-            minDate: '1970/01/01',
+            minDate: '1900/01/01',
             maxDate: '2099/12/31',
             okCallback: () => {},
         };
